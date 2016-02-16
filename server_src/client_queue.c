@@ -24,9 +24,9 @@ int open_queue() {
 }
 
 ssize_t get_queue_message(int queue_id, server_message_t *msg) {
-  return msgrcv(queue_id, msg, sizeof(game_msg_t), 1, 0);
+  return msgrcv(queue_id, msg, sizeof(game_message_t), 1, 0);
 }
 
 int send_queue_message(int queue_id, server_message_t *msg, recipient_t rcp) {
-  return msgsnd(queue_id, msg, sizeof(game_msg_t), rcp);
+  return msgsnd(queue_id, msg, sizeof(game_message_t), rcp);
 }

@@ -1,12 +1,6 @@
 #ifndef GAME__STATE__H
 #define GAME__STATE__H
-
-typedef struct army {
-  unsigned int light;
-  unsigned int heavy;
-  unsigned int cavalry;
-  unsigned int workers;
-} army_t;
+#include "../shared_src/game_protocol.h"
 
 typedef struct game_state {
   unsigned int resources;

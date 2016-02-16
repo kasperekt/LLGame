@@ -25,5 +25,5 @@ int open_queue() {
 
 int send_queue_message(int queue_id, server_message_t *msg) {
   msg->mtype = 1;
-  return msgsnd(queue_id, msg, sizeof(game_msg_t), 0);
+  return msgsnd(queue_id, msg, sizeof(game_message_t), 0);
 }

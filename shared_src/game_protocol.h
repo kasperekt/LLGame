@@ -49,11 +49,11 @@ typedef struct game_msg {
     struct train_units training;
     struct example test;
   } data;
-} game_msg_t;
+} game_message_t;
 
 typedef struct msgbuf {
   long mtype;
-  game_msg_t mdata;
+  game_message_t mdata;
 } server_message_t;
 
 #endif
