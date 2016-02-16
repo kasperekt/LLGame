@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/msg.h>
 #include <sys/ipc.h>
+#include "client_queue.h"
 
 #define KEY_PATH "/tmp"
 #define SERVER_MSGQ_ID 19
@@ -20,4 +21,8 @@ int open_queue() {
     exit(1);
   }
   return queue_id;
+}
+
+ssize_t get_queue_message(int queue_id, client_message_t *msg) {
+  return msgrcv(queue_id, msg, 10, 0, 0);
 }

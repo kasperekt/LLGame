@@ -8,5 +8,6 @@ typedef struct msgbuf {
 
 int open_queue();
 int remove_queue(int queue_id);
+ssize_t get_queue_message(int queue_id, client_message_t *msg);
 
 #endif

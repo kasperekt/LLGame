@@ -12,7 +12,7 @@ int main() {
   client_message_t message;
   printf("Queue START!\n");
 
-  while (msgrcv(client_queue_id, &message, 10, 0, 0) > 0) {
+  while (get_queue_message(client_queue_id, &message) > 0) {
     printf("Message from client: [%s]\n", message.message);
   }
 
