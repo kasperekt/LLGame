@@ -15,7 +15,7 @@ int main() {
   while (1) {
     char *command = get_command();
     strcpy(msg.message, command);
-    msgsnd(queue_id, &msg, 10, 0);
+    send_queue_message(queue_id, &msg);
   }
 
   return 0;
