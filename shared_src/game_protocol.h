@@ -1,8 +1,17 @@
 #ifndef GAME__PROTOCOL__H
 #define GAME__PROTOCOL__H
 
-#define GAME_START_ID 1
-#define GAME_STATUS_ID 2
+typedef enum action {
+  EXAMPLE = 0,
+  GAME_STATUS = 1,
+  UNIT_TRAINING = 2
+} action_t;
+
+typedef enum recipient {
+  SERVER = 1,
+  PLAYER_ONE = 2,
+  PLAYER_TWO = 3
+} recipient_t;
 
 /**
  * ARMY TYPES:
@@ -12,28 +21,39 @@
  * workers = 3
  */
 typedef struct army {
-  unsigned int light;
-  unsigned int heavy;
-  unsigned int cavalry;
-  unsigned int workers;
+  int light;
+  int heavy;
+  int cavalry;
+  int workers;
 } army_t;
 
 struct game_status {
-  unsigned int resources;
+  int resources;
   army_t army;
 };
 
 struct train_units {
-  short type;
-  unsigned count;
+  int type;
+  int count;
 };
+
+struct example {
+  char name[20];
+  char surname[20];
+};
+
+typedef struct game_msg {
+  action_t action_type;
+  union {
+    struct game_status status;
+    struct train_units training;
+    struct example test;
+  } data;
+} game_msg_t;
 
 typedef struct msgbuf {
   long mtype;
-  union {
-    struct game_status status;
-    struct train_units train;
-  } data;
+  game_msg_t mdata;
 } server_message_t;
 
 #endif
