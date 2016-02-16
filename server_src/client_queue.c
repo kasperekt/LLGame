@@ -23,6 +23,6 @@ int open_queue() {
   return queue_id;
 }
 
-ssize_t get_queue_message(int queue_id, client_message_t *msg) {
+ssize_t get_queue_message(int queue_id, server_message_t *msg) {
   return msgrcv(queue_id, msg, 10, 0, 0);
 }

@@ -9,11 +9,11 @@
 
 int main() {
   int client_queue_id = open_queue();
-  client_message_t message;
+  server_message_t message;
   printf("Queue START!\n");
 
   while (get_queue_message(client_queue_id, &message) > 0) {
-    printf("Message from client: [%s]\n", message.message);
+    printf("Message from client!");
   }
 
   printf("Queue OVER!\n");

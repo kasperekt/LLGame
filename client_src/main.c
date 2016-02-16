@@ -9,14 +9,13 @@
 #include "server_queue.h"
 
 int main() {
-  server_message_t msg = {1, "Hey!"};
-  int queue_id = open_queue();
+  // int queue_id = open_queue();
 
-  while (1) {
-    char *command = get_command();
-    strcpy(msg.message, command);
-    send_queue_message(queue_id, &msg);
-  }
+  // while (1) {
+  //   char *command = get_command();
+  //   strcpy(msg.message, command);
+  //   send_queue_message(queue_id, &msg);
+  // }
 
   return 0;
 }
