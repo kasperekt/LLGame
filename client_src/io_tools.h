@@ -3,5 +3,6 @@
 
 char *get_command();
 char remove_last_char();
+int get_client_id(char **argv);
 
 #endif

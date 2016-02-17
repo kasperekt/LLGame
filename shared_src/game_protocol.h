@@ -2,7 +2,6 @@
 #define GAME__PROTOCOL__H
 
 typedef enum action {
-  EXAMPLE = 0,
   CONNECT = 1,
   GAME_STATUS = 2,
   UNIT_TRAINING = 3
@@ -11,8 +10,7 @@ typedef enum action {
 typedef enum recipient {
   SERVER = 1,
   PLAYER_ONE = 2,
-  PLAYER_TWO = 3,
-  NONE = 4
+  PLAYER_TWO = 3
 } recipient_t;
 
 /**
@@ -39,18 +37,12 @@ struct train_units {
   int count;
 };
 
-struct example {
-  char name[20];
-  char surname[20];
-};
-
 typedef struct game_msg {
   action_t action_type;
   union {
     int client_id;
     struct game_status status;
     struct train_units training;
-    struct example test;
   } data;
 } game_message_t;
 

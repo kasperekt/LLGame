@@ -14,11 +14,6 @@ int main() {
 
   while (get_queue_message(client_queue_id, &message) > 0) {
     switch (message.mdata.action_type) {
-      case EXAMPLE: {
-        struct example data = message.mdata.data.test;
-        printf("You are %s %s\n", data.name, data.surname);
-        break;
-      }
       case CONNECT: {
         int client_id = message.mdata.data.client_id;
         printf("Client [%d] is trying to connect\n", client_id);
