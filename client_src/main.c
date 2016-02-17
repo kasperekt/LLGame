@@ -32,7 +32,6 @@ int main(int argc, char **argv) {
     }
     case 0: {
       listen_to_server(queue_id);
-      printf("The end\n");
       break;
     }
     default: {
