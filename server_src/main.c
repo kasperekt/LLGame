@@ -19,6 +19,12 @@ int main() {
         printf("Client [%d] is trying to connect\n", client_id);
         break;
       }
+      case UNIT_TRAINING: {
+        int type = message.mdata.data.training.type;
+        int count = message.mdata.data.training.count;
+        printf("Got training request of unit %d (%d times)\n", type, count);
+        break;
+      }
       default:
         break;
     }
