@@ -31,7 +31,7 @@ int send_queue_message(int queue_id, server_message_t *msg) {
 }
 
 ssize_t get_queue_message(int queue_id, server_message_t *msg) {
-  return msgrcv(queue_id, msg, sizeof(game_message_t), cid, 0);
+  return msgrcv(queue_id, msg, sizeof(game_message_t), cid + 1, 0);
 }
 
 int connect(int client_id) {

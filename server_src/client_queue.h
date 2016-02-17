@@ -4,7 +4,8 @@
 
 int open_queue();
 int remove_queue(int queue_id);
+int get_queue_id();
 ssize_t get_queue_message(int queue_id, server_message_t *msg);
-int send_queue_message(int queue_id, server_message_t *msg, recipient_t rcp);
+int send_queue_message(int queue_id, server_message_t *msg, int rcp);
 
 #endif

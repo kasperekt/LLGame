@@ -23,10 +23,22 @@ int open_queue() {
   return queue_id;
 }
 
+int get_queue_id() {
+  key_t queue_key = ftok(KEY_PATH, SERVER_MSGQ_ID);
+  int queue_id = msgget(queue_key, 0);
+  if (queue_id == -1) {
+    perror("Problem with getting queue id: ");
+    exit(1);
+  }
+
+  return queue_id;
+}
+
 ssize_t get_queue_message(int queue_id, server_message_t *msg) {
   return msgrcv(queue_id, msg, sizeof(game_message_t), 1, 0);
 }
 
-int send_queue_message(int queue_id, server_message_t *msg, recipient_t rcp) {
-  return msgsnd(queue_id, msg, sizeof(game_message_t), rcp);
+int send_queue_message(int queue_id, server_message_t *msg, int rcp) {
+  msg->mtype = rcp;
+  return msgsnd(queue_id, msg, sizeof(game_message_t), 0);
 }

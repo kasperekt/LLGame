@@ -13,8 +13,7 @@ void listen_to_server(int queue_id) {
           fprintf(stderr, "Couldn't connect to server\n");
           exit(1);
         }
-
-        printf("Successfully connected to server!\n");
+        printf("Successfully connected\n");
         break;
       }
       default:
