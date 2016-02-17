@@ -9,6 +9,8 @@
 #define KEY_PATH "/tmp"
 #define SERVER_MSGQ_ID 19
 
+int cid = -1;
+
 int remove_queue(int queue_id) {
   return msgctl(queue_id, IPC_RMID, NULL);
 }
@@ -28,8 +30,13 @@ int send_queue_message(int queue_id, server_message_t *msg) {
   return msgsnd(queue_id, msg, sizeof(game_message_t), 0);
 }
 
+ssize_t get_queue_message(int queue_id, server_message_t *msg) {
+  return msgrcv(queue_id, msg, sizeof(game_message_t), cid, 0);
+}
+
 int connect(int client_id) {
   int queue_id = open_queue();
+  cid = client_id;
   game_message_t game_msg;
   game_msg.action_type = CONNECT;
   game_msg.data.client_id = client_id;

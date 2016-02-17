@@ -22,5 +22,14 @@ int main(int argc, char **argv) {
 
   int queue_id = connect(client_id);
 
+  while (1) {
+    server_message_t msg = { 1, {
+      UNIT_TRAINING,
+      {.training = { 1, 20 }}
+    }};
+
+    send_queue_message(queue_id, &msg);
+    sleep(2);
+  }
   return 0;
 }
