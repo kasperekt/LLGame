@@ -5,7 +5,9 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
+#include <signal.h>
 #include "io_tools.h"
+#include "communication.h"
 #include "server_queue.h"
 
 int main(int argc, char **argv) {
@@ -21,15 +23,21 @@ int main(int argc, char **argv) {
   }
 
   int queue_id = connect(client_id);
-
-  while (1) {
-    server_message_t msg = { 1, {
-      UNIT_TRAINING,
-      {.training = { 1, 20 }}
-    }};
-
-    send_queue_message(queue_id, &msg);
-    sleep(2);
+  pid_t pid = fork();
+  switch (pid) {
+    case -1: {
+      perror("Error forking: ");
+      exit(1);
+      break;
+    }
+    case 0: {
+      listen_to_server(queue_id);
+      printf("The end\n");
+      break;
+    }
+    default: {
+      read_command(pid);
+    }
   }
   return 0;
 }

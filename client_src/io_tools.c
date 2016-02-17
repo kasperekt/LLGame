@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <signal.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -21,4 +22,17 @@ int get_client_id(char **argv) {
 
   char id_char = argv[1][0];
   return (int)(id_char - '0');
+}
+
+void read_command(pid_t child_pid) {
+  char c;
+  while ((c = getchar())) {
+    if (c == '\n') {
+      kill(child_pid, SIGSTOP);
+      printf("-> ");
+      char *new_command = get_command();
+      printf("Command[%s]\n", new_command);
+      kill(child_pid, SIGCONT);
+    }
+  }
 }
