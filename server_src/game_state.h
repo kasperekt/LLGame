@@ -10,10 +10,10 @@ typedef struct game_state {
   army_t *army;
 } game_state_t;
 
-extern game_state_t *players[2];
-
 void init_players();
 void add_player(int player_id);
 void destroy_players();
+void start_game();
+int can_start();
 
 #endif

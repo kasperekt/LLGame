@@ -6,15 +6,18 @@
 #include <stdlib.h>
 #include <signal.h>
 #include "client_queue.h"
+#include "game_state.h"
 #include "../shared_src/game_protocol.h"
 
-void on_sig_int() {
+void cleanup() {
   remove_queue(get_queue_id());
+  destroy_players();
   exit(SIGINT);
 }
 
 int main() {
-  signal(SIGINT, on_sig_int);
+  signal(SIGINT, cleanup);
+  init_players();
   int client_queue_id = open_queue();
   server_message_t message;
 
@@ -23,11 +26,10 @@ int main() {
       case CONNECT: {
         int client_id = message.mdata.data.client_id;
         printf("Client [%d] is trying to connect\n", client_id);
-        server_message_t cmsg = { client_id, {
-          CONNECT,
-          {.client_id = client_id}
-        }};
+        add_player(client_id);
+        server_message_t cmsg = { client_id, { CONNECT, { .client_id = client_id }}};
         send_queue_message(client_queue_id, &cmsg, client_id + 1);
+        printf("Client [%d] is connected\n", client_id);
         break;
       }
       case UNIT_TRAINING: {
