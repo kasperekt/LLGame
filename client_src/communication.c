@@ -16,6 +16,10 @@ void listen_to_server(int queue_id) {
         printf("Successfully connected\n");
         break;
       }
+      case GAME_START: {
+        printf("Game has started!\n");
+        break;
+      }
       default:
         break;
     }
