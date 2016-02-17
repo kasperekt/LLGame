@@ -42,3 +42,15 @@ int send_queue_message(int queue_id, server_message_t *msg, int rcp) {
   msg->mtype = rcp;
   return msgsnd(queue_id, msg, sizeof(game_message_t), 0);
 }
+
+void broadcast_message(int queue_id, server_message_t *msg) {
+  if (send_queue_message(queue_id, msg, 2) == -1) {
+    perror("Error broadcasting message (PLAYER ONE): ");
+    exit(1);
+  }
+
+  if (send_queue_message(queue_id, msg, 3) == -1) {
+    perror("Error broadcasting message (PLAYER TWO): ");
+    exit(1);
+  }
+}

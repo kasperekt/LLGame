@@ -7,5 +7,6 @@ int remove_queue(int queue_id);
 int get_queue_id();
 ssize_t get_queue_message(int queue_id, server_message_t *msg);
 int send_queue_message(int queue_id, server_message_t *msg, int rcp);
+void broadcast_message(int queue_id, server_message_t *msg);
 
 #endif

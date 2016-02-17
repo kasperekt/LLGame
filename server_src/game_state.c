@@ -59,8 +59,6 @@ void start_game() {
 
   int queue_id = get_queue_id();
   server_message_t msg = { 0, { GAME_START }};
-  send_queue_message(queue_id, &msg, 2);
-  send_queue_message(queue_id, &msg, 3);
-
+  broadcast_message(queue_id, &msg);
   printf("Game has started!\n");
 }
