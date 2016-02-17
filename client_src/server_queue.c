@@ -27,3 +27,17 @@ int send_queue_message(int queue_id, server_message_t *msg) {
   msg->mtype = 1;
   return msgsnd(queue_id, msg, sizeof(game_message_t), 0);
 }
+
+int connect(int client_id) {
+  int queue_id = open_queue();
+  game_message_t game_msg;
+  game_msg.action_type = CONNECT;
+  game_msg.data.client_id = client_id;
+  server_message_t msg;
+  msg.mdata = game_msg;
+  if (send_queue_message(queue_id, &msg) == -1) {
+    perror("Couldn't connect to server: ");
+    exit(1);
+  }
+  return queue_id;
+}

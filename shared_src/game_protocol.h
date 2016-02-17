@@ -3,14 +3,16 @@
 
 typedef enum action {
   EXAMPLE = 0,
-  GAME_STATUS = 1,
-  UNIT_TRAINING = 2
+  CONNECT = 1,
+  GAME_STATUS = 2,
+  UNIT_TRAINING = 3
 } action_t;
 
 typedef enum recipient {
   SERVER = 1,
   PLAYER_ONE = 2,
-  PLAYER_TWO = 3
+  PLAYER_TWO = 3,
+  NONE = 4
 } recipient_t;
 
 /**
@@ -45,6 +47,7 @@ struct example {
 typedef struct game_msg {
   action_t action_type;
   union {
+    int client_id;
     struct game_status status;
     struct train_units training;
     struct example test;

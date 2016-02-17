@@ -7,4 +7,9 @@ typedef struct game_state {
   army_t army;
 } game_state_t;
 
+typedef struct players {
+  short player_one;
+  short player_two;
+} players_t;
+
 #endif
