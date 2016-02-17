@@ -17,9 +17,9 @@ int remove_queue(int queue_id) {
 
 int open_queue() {
   key_t queue_key = ftok(KEY_PATH, SERVER_MSGQ_ID);
-  int queue_id = msgget(queue_key, IPC_CREAT | 0644);
+  int queue_id = msgget(queue_key, 0);
   if (queue_id == -1) {
-    perror("Opening queue error: ");
+    perror("Opening queue error (check if server is running): ");
     exit(1);
   }
   return queue_id;
