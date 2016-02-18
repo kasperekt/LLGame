@@ -8,7 +8,7 @@
 #include <signal.h>
 #include "io_tools.h"
 #include "communication.h"
-#include "server_queue.h"
+#include "queue.h"
 
 int main(int argc, char **argv) {
   if (argc < 2) {
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  int queue_id = connect(client_id);
+  connect(client_id);
   pid_t pid = fork();
   switch (pid) {
     case -1: {
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
       break;
     }
     case 0: {
-      listen_to_server(queue_id);
+      listen_to_server();
       break;
     }
     default: {
