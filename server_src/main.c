@@ -6,32 +6,40 @@
 #include <stdlib.h>
 #include <signal.h>
 #include "../shared_src/game_protocol.h"
-#include "client_queue.h"
+#include "queue.h"
 #include "game_state.h"
 #include "memory.h"
 
+void init() {
+  init_queue();
+  init_memory();
+  init_players();
+}
+
 void cleanup() {
-  remove_queue(get_queue_id());
+  remove_queue();
   remove_memory();
   destroy_players();
+}
+
+void sig_int() {
+  cleanup();
   exit(SIGINT);
 }
 
 int main() {
-  signal(SIGINT, cleanup);
-  init_players();
-  init_memory();
-  int client_queue_id = open_queue();
+  signal(SIGINT, sig_int);
+  init();
+  
   server_message_t message;
-
-  while (get_queue_message(client_queue_id, &message) > 0) {
+  while (get_queue_message(&message) > 0) {
     switch (message.mdata.action_type) {
       case CONNECT: {
         int client_id = message.mdata.data.client_id;
         printf("Client [%d] is trying to connect\n", client_id);
         add_player(client_id);
         server_message_t cmsg = { client_id, { CONNECT, { .client_id = client_id }}};
-        send_queue_message(client_queue_id, &cmsg, client_id + 1);
+        send_queue_message(&cmsg, client_id + 1);
         printf("Client [%d] is connected\n", client_id);
         break;
       }
@@ -46,9 +54,6 @@ int main() {
     }
   }
 
-  if (remove_queue(client_queue_id) == -1) {
-    perror("Removing queue: ");
-    exit(1);
-  }
+  cleanup();
   return 0;
 }

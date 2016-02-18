@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "game_state.h"
-#include "client_queue.h"
+#include "queue.h"
 
 static game_state_t *players[2] = { NULL, NULL };
 
@@ -57,9 +57,8 @@ void start_game() {
     return;
   }
 
-  int queue_id = get_queue_id();
   server_message_t msg = { 0, { GAME_START }};
-  broadcast_message(queue_id, &msg);
+  broadcast_message(&msg);
   printf("Game has started!\n");
 }
 
