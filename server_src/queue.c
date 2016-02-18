@@ -12,7 +12,7 @@
 static int queue_id = -1;
 
 void remove_queue() {
-  if (msgctl(queue_id, IPC_RMID, NULL) == -1) {
+  if (msgctl(queue_id, IPC_RMID, 0) == -1) {
     perror("Error removing queue: ");
     exit(1);
   }

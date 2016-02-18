@@ -46,11 +46,20 @@ void start_resources_production() {
     }
     case 0: {
       while (1) {
-        sem_lock(memory_sem);
+        if (sem_lock(memory_sem) == -1) {
+            perror("Semaphore locking error: ");
+            exit(1);
+        }
+
         increment_resources(0);
         increment_resources(1);
         broadcast_game_status();
-        sem_unlock(memory_sem);
+
+        if (sem_unlock(memory_sem) == -1) {
+            perror("Semaphore unlocking error: ");
+            exit(1);
+        }
+
         sleep(1);
       }
       exit(0);
@@ -68,5 +77,8 @@ game_state_t **get_memory_data(char *shmaddr) {
 }
 
 void detach_memory_data(game_state_t **data) {
-  shmdt(data);
+  if (shmdt(data) == -1) {
+    perror("Error detaching memory: ");
+    exit(1);
+  };
 }

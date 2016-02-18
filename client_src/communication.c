@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "../shared_src/game_protocol.h"
 #include "queue.h"
 
 void listen_to_server() {
@@ -18,6 +19,17 @@ void listen_to_server() {
       }
       case GAME_START: {
         printf("Game has started!\n");
+        break;
+      }
+      case GAME_STATUS: {
+        game_status_t status = msg.mdata.data.status;
+        printf("Status: Resources: %d, Army: L[%d] H[%d] C[%d] W[%d]\n",
+          status.resources,
+          status.army.light,
+          status.army.heavy,
+          status.army.cavalry,
+          status.army.workers
+        );
         break;
       }
       default:

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "../shared_src/game_protocol.h"
 #include "game_state.h"
 #include "memory.h"
 #include "queue.h"
@@ -8,6 +9,7 @@
 static const int RESOURCES_STEP = 50;
 
 static game_state_t *players[2] = { NULL, NULL };
+static game_state_t **mem_state = NULL;
 
 int can_start() {
   return !(players[0] == NULL || players[1] == NULL);
@@ -61,6 +63,7 @@ void start_game() {
   server_message_t msg = { 0, { GAME_START }};
   broadcast_message(&msg);
   printf("Game has started!\n");
+  start_resources_production();
 }
 
 size_t game_state_size() {
@@ -68,19 +71,30 @@ size_t game_state_size() {
 }
 
 void attach_state() {
-  game_state_t **state = get_memory_data(0);
-  players[0] = state[0];
-  players[1] = state[1];
+  mem_state = get_memory_data(0);
+  players[0] = mem_state[0];
+  players[1] = mem_state[1];
 }
 
 void save_state() {
-  game_state_t **state = get_memory_data(0);
-  state[0] = players[0];
-  state[1] = players[1];
-  detach_memory_data(state);
+  if (mem_state == NULL) {
+    mem_state = get_memory_data(0);
+  }
+  
+  mem_state[0] = players[0];
+  mem_state[1] = players[1];
+  detach_memory_data(mem_state);
 }
 
 void broadcast_game_status() {
+  for (int i = 0; i < 2; ++i) {
+    const int rcp = i + 2;
+    server_message_t msg = { rcp, {
+      GAME_STATUS,
+      { .status = { players[i]->resources, *(players[i]->army) }}
+    }};
+    send_queue_message(&msg, rcp);
+  }
 }
 
 void increment_resources(int player_id) {

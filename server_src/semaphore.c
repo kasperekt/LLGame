@@ -7,6 +7,15 @@
 
 #define SEM_KEY_PATH "/tmp"
 static int sem_key_id = 55;
+static const int SEM_OP_FLAG = SEM_UNDO;
+
+int init_sem(int semid) {
+  union semun argument;
+  unsigned short values[1];
+  values[0] = 1;
+  argument.array = values;
+  return semctl(semid, 0, SETALL, argument);
+}
 
 int create_sem() {
   key_t key = ftok(SEM_KEY_PATH, sem_key_id++);
@@ -19,31 +28,18 @@ int create_sem() {
     exit(1);
   }
 
+  init_sem(sem_id);
   return sem_id;
 }
 
-int init_sem(int semid) {
-  union semun argument;
-  unsigned short values[1];
-  values[0] = 1;
-  argument.array = values;
-  return semctl(semid, 0, SETALL, argument);
-}
-
 int sem_unlock(int semid) {
-  struct sembuf operations[1];
-  operations[0].sem_num = 0;
-  operations[0].sem_op = 1;
-  operations[0].sem_flg = 0;
-  return semop(semid, operations, 1);
+  struct sembuf operations = {0, 1, SEM_OP_FLAG};
+  return semop(semid, &operations, 1);
 }
 
 int sem_lock(int semid) {
-  struct sembuf operations[1];
-  operations[0].sem_num = 0;
-  operations[0].sem_op = -1;
-  operations[0].sem_flg = 0;
-  return semop(semid, operations, 1);
+  struct sembuf operations = {0, -1, SEM_OP_FLAG};
+  return semop(semid, &operations, 1);
 }
 
 void remove_sem(int semid) {

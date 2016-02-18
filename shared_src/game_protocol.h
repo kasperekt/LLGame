@@ -2,15 +2,15 @@
 #define GAME__PROTOCOL__H
 #include "game_world.h"
 
-struct game_status {
+typedef struct game_status {
   int resources;
   army_t army;
-};
+} game_status_t;
 
-struct train_units {
+typedef struct train_units {
   int type;
   int count;
-};
+} training_t;
 
 typedef enum action {
   CONNECT = 1,
@@ -23,8 +23,8 @@ typedef struct game_msg {
   action_t action_type;
   union {
     int client_id;
-    struct game_status status;
-    struct train_units training;
+    game_status_t status;
+    training_t training;
   } data;
 } game_message_t;
 
