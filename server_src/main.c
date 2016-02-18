@@ -40,7 +40,7 @@ int main() {
         add_player(client_id);
         server_message_t cmsg = { client_id, { CONNECT, { .client_id = client_id }}};
         send_queue_message(&cmsg, client_id + 1);
-        printf("Client [%d] is connected\n", client_id);
+        printf("Client [%d] has connected\n", client_id);
         if (can_start()) {
           start_game();
         }
