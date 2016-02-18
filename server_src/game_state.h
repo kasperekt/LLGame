@@ -14,7 +14,11 @@ void init_players();
 void add_player(int player_id);
 void destroy_players();
 void start_game();
+void attach_state();
+void save_state();
 int can_start();
+void increment_resources(int player_id);
+void broadcast_game_status();
 size_t game_state_size();
 
 #endif

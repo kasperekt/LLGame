@@ -30,7 +30,7 @@ void sig_int() {
 int main() {
   signal(SIGINT, sig_int);
   init();
-  
+
   server_message_t message;
   while (get_queue_message(&message) > 0) {
     switch (message.mdata.action_type) {
@@ -41,6 +41,9 @@ int main() {
         server_message_t cmsg = { client_id, { CONNECT, { .client_id = client_id }}};
         send_queue_message(&cmsg, client_id + 1);
         printf("Client [%d] is connected\n", client_id);
+        if (can_start()) {
+          start_game();
+        }
         break;
       }
       case UNIT_TRAINING: {

@@ -1,7 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "game_state.h"
+#include "memory.h"
 #include "queue.h"
+
+static const int RESOURCES_STEP = 50;
 
 static game_state_t *players[2] = { NULL, NULL };
 
@@ -36,10 +40,6 @@ void add_player(int player_id) {
   players[id]->player_id = player_id;
   players[id]->resources = INITIAL_RESOURCES_COUNT;
   players[id]->army = army;
-
-  if (can_start()) {
-    start_game();
-  }
 }
 
 void destroy_players() {
@@ -57,6 +57,7 @@ void start_game() {
     return;
   }
 
+  save_state();
   server_message_t msg = { 0, { GAME_START }};
   broadcast_message(&msg);
   printf("Game has started!\n");
@@ -64,4 +65,27 @@ void start_game() {
 
 size_t game_state_size() {
   return 2 * sizeof(game_state_t*);
+}
+
+void attach_state() {
+  game_state_t **state = get_memory_data(0);
+  players[0] = state[0];
+  players[1] = state[1];
+}
+
+void save_state() {
+  game_state_t **state = get_memory_data(0);
+  state[0] = players[0];
+  state[1] = players[1];
+  detach_memory_data(state);
+}
+
+void broadcast_game_status() {
+}
+
+void increment_resources(int player_id) {
+  attach_state();
+  const int workers_count = players[player_id]->army->workers;
+  players[player_id]->resources += RESOURCES_STEP + (workers_count * 5);
+  save_state();
 }
