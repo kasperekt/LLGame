@@ -62,3 +62,7 @@ void start_game() {
   broadcast_message(queue_id, &msg);
   printf("Game has started!\n");
 }
+
+size_t game_state_size() {
+  return 2 * sizeof(game_state_t*);
+}

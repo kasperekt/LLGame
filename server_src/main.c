@@ -5,12 +5,14 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
+#include "../shared_src/game_protocol.h"
 #include "client_queue.h"
 #include "game_state.h"
-#include "../shared_src/game_protocol.h"
+#include "memory.h"
 
 void cleanup() {
   remove_queue(get_queue_id());
+  remove_memory();
   destroy_players();
   exit(SIGINT);
 }
@@ -18,6 +20,7 @@ void cleanup() {
 int main() {
   signal(SIGINT, cleanup);
   init_players();
+  init_memory();
   int client_queue_id = open_queue();
   server_message_t message;
 

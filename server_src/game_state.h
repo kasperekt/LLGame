@@ -15,5 +15,6 @@ void add_player(int player_id);
 void destroy_players();
 void start_game();
 int can_start();
+size_t game_state_size();
 
 #endif
