@@ -12,11 +12,17 @@ typedef struct train_units {
   int count;
 } training_t;
 
+typedef struct attack {
+  short attacker_id;
+  army_t army;
+} attack_t;
+
 typedef enum action {
   CONNECT = 1,
   GAME_START = 2,
   GAME_STATUS = 3,
-  UNIT_TRAINING = 4
+  UNIT_TRAINING = 4,
+  ATTACK = 5
 } action_t;
 
 typedef struct game_msg {
@@ -25,6 +31,7 @@ typedef struct game_msg {
     int client_id;
     game_status_t status;
     training_t training;
+    attack_t attack;
   } data;
 } game_message_t;
 
