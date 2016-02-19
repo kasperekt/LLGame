@@ -19,6 +19,7 @@ void attach_state();
 void save_state();
 int can_start();
 void increment_resources(int player_id);
+void remove_resources(int id, int resources);
 void add_unit(int id, army_type_t type);
 void broadcast_game_status();
 size_t game_state_size();

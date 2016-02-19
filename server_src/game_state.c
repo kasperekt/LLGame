@@ -104,6 +104,12 @@ void increment_resources(int player_id) {
   save_state();
 }
 
+void remove_resources(int id, int resources) {
+  attach_state();
+  players[id].resources -= resources;
+  save_state();
+}
+
 void add_unit(int id, army_type_t type) {
   attach_state();
   switch (type) {
@@ -125,12 +131,5 @@ void add_unit(int id, army_type_t type) {
     }
     default: break;
   }
-  printf("R: [%d], Army: [%d], [%d], [%d], [%d]\n",
-    players[id].resources,
-    players[id].army.light,
-    players[id].army.heavy,
-    players[id].army.cavalry,
-    players[id].army.workers
-  );
   save_state();
 }

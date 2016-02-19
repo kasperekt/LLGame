@@ -47,13 +47,16 @@ void start_training(int id, army_type_t type, int count) {
       exit(1);
     }
     case 0: {
-      printf("Start Training!!!\n");
+      int resources = unit_cost(type) * count;
+      sem_lock(memory_sem);
+      remove_resources(id, resources);
+      sem_unlock(memory_sem);
+
       while (count--) {
         int unit_counter = unit_training_time(type);
         while (unit_counter--) sleep(1);
 
         sem_lock(memory_sem);
-        printf("Add unit!\n");
         add_unit(id, type);
         sem_unlock(memory_sem);
       }
