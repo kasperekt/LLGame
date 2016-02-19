@@ -5,8 +5,8 @@
 #define INITIAL_RESOURCES_COUNT 300
 
 typedef struct game_state {
-  short player_id;
-  unsigned int resources;
+  int resources;
+  int wins;
   army_t *army;
 } game_state_t;
 

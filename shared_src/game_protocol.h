@@ -4,6 +4,7 @@
 
 typedef struct game_status {
   int resources;
+  int wins;
   army_t army;
 } game_status_t;
 

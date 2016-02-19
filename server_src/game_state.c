@@ -39,7 +39,7 @@ void add_player(int player_id) {
   army->workers = 0;
 
   players[id] = malloc(sizeof(struct game_state));
-  players[id]->player_id = player_id;
+  players[id]->wins = 0;
   players[id]->resources = INITIAL_RESOURCES_COUNT;
   players[id]->army = army;
 }
@@ -91,7 +91,7 @@ void broadcast_game_status() {
     const int rcp = i + 2;
     server_message_t msg = { rcp, {
       GAME_STATUS,
-      { .status = { players[i]->resources, *(players[i]->army) }}
+      { .status = { players[i]->resources, 0, *(players[i]->army) }}
     }};
     send_message(&msg, rcp, 1);
   }
