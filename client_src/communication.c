@@ -38,11 +38,13 @@ void listen_to_server() {
       case ATTACK_RESULT: {
         int winner_id = msg.mdata.data.attack_result.winner_id;
         printf("Player %d has won the battle\n", winner_id);
+        sleep(1);
         break;
       }
       case GAME_RESULT: {
         int winner_id = msg.mdata.data.game_result.winner_id;
         printf("WINNER IS: %d\n", winner_id);
+        sleep(1);
         break;
       }
       default:

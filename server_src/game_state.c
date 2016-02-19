@@ -86,7 +86,7 @@ void broadcast_game_status() {
     const int rcp = i + 2;
     server_message_t msg = { rcp, {
       GAME_STATUS,
-      { .status = { players[i].resources, 0, players[i].army }}
+      { .status = { players[i].resources, players[i].wins, players[i].army }}
     }};
     send_message(&msg, rcp, 1);
   }
@@ -169,14 +169,21 @@ int attack(int a_id, int d_id, army_t a_army) {
   attach_state();
 
   float defence = army_defence(players[d_id].army);
-  float attack = army_attack(players[a_id].army);
   float def_attack = army_attack(players[d_id].army);
-  float att_defence = army_defence(players[a_id].army);
+  float attack = army_attack(a_army);
+  float att_defence = army_defence(a_army);
+
+  printf("Attacker: A[%.1f] D[%.1f] | Defender: A[%.1f] D[%.1f]\n",
+    attack,
+    att_defence,
+    def_attack,
+    defence
+  );
 
   if ((attack - defence) > 0) {
     clear_army(d_id);
     winner = a_id + 1;
-    players[d_id].wins += 1;
+    players[a_id].wins += 1;
   } else {
     casualties(&players[d_id].army, attack, defence);
     winner = d_id + 1;
