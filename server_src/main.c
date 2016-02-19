@@ -23,7 +23,7 @@ void cleanup() {
 }
 
 void sig_int() {
-  cleanup();Un
+  cleanup();
   exit(SIGINT);
 }
 
