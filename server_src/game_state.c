@@ -9,16 +9,19 @@
 
 static const int RESOURCES_STEP = 50;
 
-static game_state_t *players[2] = { NULL, NULL };
-static game_state_t **mem_state = NULL;
+static game_state_t *players = NULL;
+static game_state_t *mem_state = NULL;
+static int players_online[2] = {0, 0};
 
 int can_start() {
-  return !(players[0] == NULL || players[1] == NULL);
+  return players_online[0] == 1 && players_online[1] == 1;
 }
 
 void init_players() {
-  players[0] = NULL;
-  players[1] = NULL;
+  players_online[0] = 0;
+  players_online[1] = 0;
+  mem_state = NULL;
+  players = malloc(game_state_size());
 }
 
 void add_player(int player_id) {
@@ -28,30 +31,28 @@ void add_player(int player_id) {
   }
 
   int id = player_id - 1;
-  if (players[id] != NULL) {
+  if (players_online[id] == 1) {
       fprintf(stderr, "Player already taken\n");
       return;
   }
 
-  army_t *army = malloc(sizeof(struct army));
-  army->light = 0;
-  army->heavy = 0;
-  army->cavalry = 0;
-  army->workers = 0;
-
-  players[id] = malloc(sizeof(struct game_state));
-  players[id]->wins = 0;
-  players[id]->resources = INITIAL_RESOURCES_COUNT;
-  players[id]->army = army;
+  players_online[id] = 1;
+  army_t army = {0, 0, 0, 0};
+  players[id].wins = 0;
+  players[id].resources = INITIAL_RESOURCES_COUNT;
+  players[id].army = army;
 }
 
 void destroy_players() {
-  for (int i = 0; i < 2; ++i) {
-    if (players[i] != NULL) {
-      free(players[i]->army);
-      free(players[i]);
-    }
+  if (players != NULL) {
+    free(players);
   }
+  // for (int i = 0; i < 2; ++i) {
+  //   if (players[i] != NULL) {
+  //     free(players[i]->army);
+  //     free(players[i]);
+  //   }
+  // }
 }
 
 void start_game() {
@@ -68,14 +69,12 @@ void start_game() {
 }
 
 size_t game_state_size() {
-  return 2 * (6 * sizeof(int));
+  return 2 * sizeof(game_state_t);
 }
 
 void attach_state() {
   mem_state = get_memory_data(0);
-  players[0] = mem_state[0];
-  players[1] = mem_state[1];
-  // memcpy(&players, &mem_state, game_state_size());
+  memcpy(players, mem_state, game_state_size());
 }
 
 void save_state() {
@@ -83,9 +82,7 @@ void save_state() {
     mem_state = get_memory_data(0);
   }
 
-  mem_state[0] = players[0];
-  mem_state[1] = players[1];
-  // memcpy(&mem_state, &players, game_state_size());
+  memcpy(mem_state, players, game_state_size());
   detach_memory_data(mem_state);
 }
 
@@ -94,7 +91,7 @@ void broadcast_game_status() {
     const int rcp = i + 2;
     server_message_t msg = { rcp, {
       GAME_STATUS,
-      { .status = { players[i]->resources, 0, *(players[i]->army) }}
+      { .status = { players[i].resources, 0, players[i].army }}
     }};
     send_message(&msg, rcp, 1);
   }
@@ -102,8 +99,8 @@ void broadcast_game_status() {
 
 void increment_resources(int player_id) {
   attach_state();
-  const int workers_count = players[player_id]->army->workers;
-  players[player_id]->resources += RESOURCES_STEP + (workers_count * 5);
+  const int workers_count = players[player_id].army.workers;
+  players[player_id].resources += RESOURCES_STEP + (workers_count * 5);
   save_state();
 }
 
@@ -111,29 +108,29 @@ void add_unit(int id, army_type_t type) {
   attach_state();
   switch (type) {
     case LIGHT: {
-      players[id]->army->light += 1;
+      players[id].army.light += 1;
       break;
     }
     case HEAVY: {
-      players[id]->army->heavy += 1;
+      players[id].army.heavy += 1;
       break;
     }
     case CAVALRY: {
-      players[id]->army->cavalry += 1;
+      players[id].army.cavalry += 1;
       break;
     }
     case WORKERS: {
-      players[id]->army->workers += 1;
+      players[id].army.workers += 1;
       break;
     }
     default: break;
   }
   printf("R: [%d], Army: [%d], [%d], [%d], [%d]\n",
-    players[id]->resources,
-    players[id]->army->light,
-    players[id]->army->heavy,
-    players[id]->army->cavalry,
-    players[id]->army->workers
+    players[id].resources,
+    players[id].army.light,
+    players[id].army.heavy,
+    players[id].army.cavalry,
+    players[id].army.workers
   );
   save_state();
 }

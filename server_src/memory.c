@@ -99,12 +99,12 @@ void start_resources_production() {
   }
 }
 
-game_state_t **get_memory_data(char *shmaddr) {
+game_state_t *get_memory_data(char *shmaddr) {
   const int shmat_flag = 0;
   return shmat(memory_id, shmaddr, shmat_flag);
 }
 
-void detach_memory_data(game_state_t **data) {
+void detach_memory_data(game_state_t *data) {
   if (shmdt(data) == -1) {
     perror("Error detaching memory: ");
     exit(1);

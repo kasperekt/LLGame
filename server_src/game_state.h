@@ -8,7 +8,7 @@
 typedef struct game_state {
   int resources;
   int wins;
-  army_t *army;
+  army_t army;
 } game_state_t;
 
 void init_players();
