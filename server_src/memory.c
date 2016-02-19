@@ -17,7 +17,6 @@ static pid_t resources_pid = -1;
 void init_memory() {
   key_t key = ftok(MEMORY_KEY_PATH, MEMORY_KEY_ID);
   size_t size = game_state_size();
-  printf("SIZE IS %d\n", (int)size);
   int flags = IPC_CREAT | 0644;
   memory_id = shmget(key, size, flags);
   if (memory_id == -1) {
