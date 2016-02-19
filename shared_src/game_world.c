@@ -6,6 +6,11 @@ const int HEAVY_COST = 250;
 const int CAVALRY_COST = 550;
 const int WORKERS_COST = 150;
 
+const int LIGHT_TIME = 2;
+const int HEAVY_TIME = 3;
+const int CAVALRY_TIME = 5;
+const int WORKERS_TIME = 2;
+
 army_type_t get_army_type(const char *type_str) {
   if (strcmp(type_str, "light") == 0) {
     return LIGHT;
@@ -26,6 +31,16 @@ int unit_cost(army_type_t type) {
     case HEAVY: return HEAVY_COST;
     case CAVALRY: return CAVALRY_COST;
     case WORKERS: return WORKERS_COST;
+    default: return 0;
+  }
+}
+
+int unit_training_time(army_type_t type) {
+  switch (type) {
+    case LIGHT: return LIGHT_TIME;
+    case HEAVY: return HEAVY_TIME;
+    case CAVALRY: return CAVALRY_TIME;
+    case WORKERS: return WORKERS_TIME;
     default: return 0;
   }
 }

@@ -101,6 +101,7 @@ void read_command(pid_t child_pid) {
             server_message_t msg = { 1, {
               UNIT_TRAINING,
               { .training = {
+                  cid,
                   army_type,
                   count
               }}

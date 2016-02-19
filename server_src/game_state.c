@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 #include "../shared_src/game_protocol.h"
@@ -67,13 +68,14 @@ void start_game() {
 }
 
 size_t game_state_size() {
-  return 2 * sizeof(game_state_t*);
+  return 2 * (6 * sizeof(int));
 }
 
 void attach_state() {
   mem_state = get_memory_data(0);
   players[0] = mem_state[0];
   players[1] = mem_state[1];
+  // memcpy(&players, &mem_state, game_state_size());
 }
 
 void save_state() {
@@ -83,6 +85,7 @@ void save_state() {
 
   mem_state[0] = players[0];
   mem_state[1] = players[1];
+  // memcpy(&mem_state, &players, game_state_size());
   detach_memory_data(mem_state);
 }
 
@@ -101,5 +104,36 @@ void increment_resources(int player_id) {
   attach_state();
   const int workers_count = players[player_id]->army->workers;
   players[player_id]->resources += RESOURCES_STEP + (workers_count * 5);
+  save_state();
+}
+
+void add_unit(int id, army_type_t type) {
+  attach_state();
+  switch (type) {
+    case LIGHT: {
+      players[id]->army->light += 1;
+      break;
+    }
+    case HEAVY: {
+      players[id]->army->heavy += 1;
+      break;
+    }
+    case CAVALRY: {
+      players[id]->army->cavalry += 1;
+      break;
+    }
+    case WORKERS: {
+      players[id]->army->workers += 1;
+      break;
+    }
+    default: break;
+  }
+  printf("R: [%d], Army: [%d], [%d], [%d], [%d]\n",
+    players[id]->resources,
+    players[id]->army->light,
+    players[id]->army->heavy,
+    players[id]->army->cavalry,
+    players[id]->army->workers
+  );
   save_state();
 }

@@ -8,6 +8,7 @@
 #include "queue.h"
 #include "semaphore.h"
 #include "game_state.h"
+#include "../shared_src/game_world.h"
 
 static int memory_id = -1;
 static int memory_sem = -1;
@@ -16,6 +17,7 @@ static pid_t resources_pid = -1;
 void init_memory() {
   key_t key = ftok(MEMORY_KEY_PATH, MEMORY_KEY_ID);
   size_t size = game_state_size();
+  printf("SIZE IS %d\n", (int)size);
   int flags = IPC_CREAT | 0644;
   memory_id = shmget(key, size, flags);
   if (memory_id == -1) {
@@ -34,6 +36,32 @@ void remove_memory() {
   if (shmctl(memory_id, IPC_RMID, NULL) == -1) {
     perror("Error removing shared memory: ");
     exit(1);
+  }
+}
+
+void start_training(int id, army_type_t type, int count) {
+  pid_t pid = fork();
+  switch (pid) {
+    case -1: {
+      perror("Error forking (training): ");
+      exit(1);
+    }
+    case 0: {
+      printf("Start Training!!!\n");
+      while (count--) {
+        int unit_counter = unit_training_time(type);
+        while (unit_counter--) sleep(1);
+
+        sem_lock(memory_sem);
+        printf("Add unit!\n");
+        add_unit(id, type);
+        sem_unlock(memory_sem);
+      }
+      exit(0);
+    }
+    default: {
+      break;
+    }
   }
 }
 

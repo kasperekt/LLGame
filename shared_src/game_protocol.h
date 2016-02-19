@@ -9,6 +9,7 @@ typedef struct game_status {
 } game_status_t;
 
 typedef struct train_units {
+  int player_id;
   int type;
   int count;
 } training_t;

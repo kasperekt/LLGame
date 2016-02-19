@@ -46,9 +46,15 @@ int main() {
         break;
       }
       case UNIT_TRAINING: {
+        int client_id = message.mdata.data.training.player_id - 1;
         int type = message.mdata.data.training.type;
         int count = message.mdata.data.training.count;
-        printf("Got training request of unit %d (%d times)\n", type, count);
+        printf("Got training request of unit <%s> (%d times) from client %d\n",
+          unit_string(type),
+          count,
+          client_id
+        );
+        start_training(client_id, type, count);
         break;
       }
       default:
