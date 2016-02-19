@@ -2,6 +2,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
+#include "io_tools.h"
 
 void clear_terminal() {
   printf("\033[2J\033[1;1H");
@@ -13,11 +14,18 @@ char *remove_last_char(char *str) {
   return str;
 }
 
-char *get_command() {
+command_t get_command() {
   char *data = 0;
   size_t sth = 0;
   getline(&data, &sth, stdin);
-  return remove_last_char(data);
+  char *command = remove_last_char(data);
+  if (strcmp(command, "train") == 0) {
+    return TRAIN_COMMAND;
+  } else if (strcmp(command, "attack") == 0) {
+    return ATTACK_COMMAND;
+  }
+
+  return WRONG_COMMAND;
 }
 
 int get_client_id(char **argv) {
@@ -34,9 +42,21 @@ void read_command(pid_t child_pid) {
   while ((c = getchar())) {
     if (c == '\n') {
       kill(child_pid, SIGSTOP);
+      printf("Commands: 'attack', 'train'\n");
       printf("-> ");
-      char *new_command = get_command();
-      printf("Command[%s]\n", new_command);
+      switch(get_command()) {
+          case TRAIN_COMMAND: {
+            printf("Training\n");
+            sleep(1);
+            break;
+          }
+          case ATTACK_COMMAND: {
+            printf("Attack!\n");
+            sleep(1);
+            break;
+          }
+          default: break;
+      }
       kill(child_pid, SIGCONT);
     }
   }
