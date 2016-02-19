@@ -17,12 +17,28 @@ typedef struct attack {
   army_t army;
 } attack_t;
 
+typedef struct attack_result {
+  short winner_id;
+  short defeated_id;
+  short player_one_wins;
+  short player_two_wins;
+  army_t winner_losses;
+} attack_result_t;
+
+typedef struct game_result {
+  short winner_id;
+  short winner_score;
+  short defeated_score;
+} game_result_t;
+
 typedef enum action {
   CONNECT = 1,
   GAME_START = 2,
   GAME_STATUS = 3,
   UNIT_TRAINING = 4,
-  ATTACK = 5
+  ATTACK = 5,
+  ATTACK_RESULT = 6,
+  GAME_RESULT = 7
 } action_t;
 
 typedef struct game_msg {
@@ -32,6 +48,8 @@ typedef struct game_msg {
     game_status_t status;
     training_t training;
     attack_t attack;
+    attack_result_t attack_result;
+    game_result_t game_result;
   } data;
 } game_message_t;
 

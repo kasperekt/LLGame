@@ -23,7 +23,7 @@ void cleanup() {
 }
 
 void sig_int() {
-  cleanup();
+  cleanup();Un
   exit(SIGINT);
 }
 
@@ -36,7 +36,6 @@ int main() {
     switch (message.mdata.action_type) {
       case CONNECT: {
         int client_id = message.mdata.data.client_id;
-        printf("Client [%d] is trying to connect\n", client_id);
         add_player(client_id);
         server_message_t cmsg = { client_id, { CONNECT, { .client_id = client_id }}};
         send_queue_message(&cmsg, client_id + 1);
