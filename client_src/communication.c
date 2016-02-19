@@ -43,8 +43,15 @@ void listen_to_server() {
       }
       case GAME_RESULT: {
         int winner_id = msg.mdata.data.game_result.winner_id;
-        printf("WINNER IS: %d\n", winner_id);
-        sleep(1);
+
+        if (winner_id == cid) {
+          printf("\n----- WINNER!!! -----\n");
+        } else {
+          printf("DEFEATED!\n");
+        }
+
+        sleep(5);
+        exit(0);
         break;
       }
       default:

@@ -161,7 +161,7 @@ void finish_game(int winner) {
     { .game_result = { winner }}
   }};
   broadcast_message(&msg);
-  printf("Game has ended\n");
+  printf("Game has ended. Press CTRL + C to quit...\n");
 }
 
 int attack(int a_id, int d_id, army_t a_army) {
@@ -187,7 +187,6 @@ int attack(int a_id, int d_id, army_t a_army) {
   } else {
     casualties(&players[d_id].army, attack, defence);
     winner = d_id + 1;
-    players[d_id].wins += 1;
   }
 
   if ((def_attack - att_defence) <= 0) {
