@@ -21,10 +21,6 @@ typedef struct attack {
 
 typedef struct attack_result {
   short winner_id;
-  short defeated_id;
-  short player_one_wins;
-  short player_two_wins;
-  army_t winner_losses;
 } attack_result_t;
 
 typedef struct game_result {

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include <unistd.h>
 #include "../shared_src/game_protocol.h"
 #include "game_state.h"
@@ -47,12 +48,6 @@ void destroy_players() {
   if (players != NULL) {
     free(players);
   }
-  // for (int i = 0; i < 2; ++i) {
-  //   if (players[i] != NULL) {
-  //     free(players[i]->army);
-  //     free(players[i]);
-  //   }
-  // }
 }
 
 void start_game() {
@@ -132,4 +127,71 @@ void add_unit(int id, army_type_t type) {
     default: break;
   }
   save_state();
+}
+
+void clear_army(int id) {
+  players[id].army.light = 0;
+  players[id].army.heavy = 0;
+  players[id].army.cavalry = 0;
+}
+
+void casualties(army_t *army, float attack, float defence) {
+  army->light -= floor(army->light * attack/defence);
+  army->heavy -= floor(army->heavy * attack/defence);
+  army->cavalry -= floor(army->cavalry * attack/defence);
+}
+
+void remove_units(int id, army_t a_army) {
+  attach_state();
+  players[id].army.light -= a_army.light;
+  players[id].army.heavy -= a_army.heavy;
+  players[id].army.cavalry -= a_army.cavalry;
+  save_state();
+}
+
+void add_units(int id, army_t army) {
+  players[id].army.light += army.light;
+  players[id].army.heavy += army.heavy;
+  players[id].army.cavalry += army.cavalry;
+}
+
+void finish_game(int winner) {
+  server_message_t msg = { 2, {
+    GAME_RESULT,
+    { .game_result = { winner }}
+  }};
+  broadcast_message(&msg);
+  printf("Game has ended\n");
+}
+
+int attack(int a_id, int d_id, army_t a_army) {
+  int winner = 0;
+  attach_state();
+
+  float defence = army_defence(players[d_id].army);
+  float attack = army_attack(players[a_id].army);
+  float def_attack = army_attack(players[d_id].army);
+  float att_defence = army_defence(players[a_id].army);
+
+  if ((attack - defence) > 0) {
+    clear_army(d_id);
+    winner = a_id + 1;
+    players[d_id].wins += 1;
+  } else {
+    casualties(&players[d_id].army, attack, defence);
+    winner = d_id + 1;
+    players[d_id].wins += 1;
+  }
+
+  if ((def_attack - att_defence) <= 0) {
+    casualties(&a_army, def_attack, att_defence);
+    add_units(a_id, a_army);
+  }
+
+  if (players[a_id].wins == 5 || players[d_id].wins == 5) {
+    finish_game(winner);
+  }
+
+  save_state();
+  return winner;
 }

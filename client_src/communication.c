@@ -25,13 +25,24 @@ void listen_to_server() {
       case GAME_STATUS: {
         game_status_t status = msg.mdata.data.status;
         clear_terminal();
-        printf("Resources: %d, Army: L[%d] H[%d] C[%d] W[%d]\n",
+        printf("SCORE: %d | Resources: %d | Army: L[%d] H[%d] C[%d] W[%d]\n",
+          status.wins,
           status.resources,
           status.army.light,
           status.army.heavy,
           status.army.cavalry,
           status.army.workers
         );
+        break;
+      }
+      case ATTACK_RESULT: {
+        int winner_id = msg.mdata.data.attack_result.winner_id;
+        printf("Player %d has won the battle\n", winner_id);
+        break;
+      }
+      case GAME_RESULT: {
+        int winner_id = msg.mdata.data.game_result.winner_id;
+        printf("WINNER IS: %d\n", winner_id);
         break;
       }
       default:

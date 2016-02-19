@@ -60,6 +60,17 @@ int get_client_id(char **argv) {
   return (int)(id_char - '0');
 }
 
+int attack_unit_count(army_type_t type, int max) {
+  printf("%s (max %d)\n", unit_string(type), max);
+  int count = atoi(get_command_string());
+  while (count > max || count < 0) {
+    printf("Wrong number passed\n");
+    count = atoi(get_command_string());
+  }
+
+  return count;
+}
+
 void read_command(pid_t child_pid) {
   char c;
   while ((c = getchar())) {
@@ -93,8 +104,8 @@ void read_command(pid_t child_pid) {
 
             printf("You can train max [%d]\nHow many do you want?\n", max);
             int count = atoi(get_command_string());
-            while (count > max) {
-              printf("You don't have enough resources\n");
+            while (count > max || count < 0) {
+              printf("Wrong number passed\n");
               count = atoi(get_command_string());
             }
 
@@ -112,12 +123,33 @@ void read_command(pid_t child_pid) {
             break;
           }
           case ATTACK_COMMAND: {
-            printf("Attack!\n");
+            clear_terminal();
+            game_status_t status;
+            if (get_status(&status) == -1) {
+              break;
+            }
+
+            printf("-- ATTACK --\n");
+            int light = attack_unit_count(LIGHT, status.army.light);
+            int heavy = attack_unit_count(HEAVY, status.army.heavy);
+            int cavalry = attack_unit_count(CAVALRY, status.army.cavalry);
+            if (light == 0 && heavy == 0 && cavalry == 0) {
+              printf("No army sent.\n");
+              sleep(1);
+              break;
+            }
+
+            army_t attack_army = { light, heavy, cavalry, 0 };
+            server_message_t msg = { 1, {
+              ATTACK,
+              { .attack = { cid, attack_army }}
+            }};
+            send_queue_message(&msg);
+
             sleep(1);
             break;
           }
           default: {
-            fprintf(stderr, "default\n");
             break;
           }
       }

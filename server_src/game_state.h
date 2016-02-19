@@ -21,7 +21,10 @@ int can_start();
 void increment_resources(int player_id);
 void remove_resources(int id, int resources);
 void add_unit(int id, army_type_t type);
+void remove_units(int id, army_t a_army);
+int attack(int a_id, int d_id, army_t a_army);
 void broadcast_game_status();
 size_t game_state_size();
+void finish_game(int winner);
 
 #endif

@@ -57,6 +57,19 @@ int main() {
         start_training(client_id, type, count);
         break;
       }
+      case ATTACK: {
+        int attacker_id = message.mdata.data.attack.attacker_id;
+        int defender_id = attacker_id == 1 ? 2 : 1;
+        army_t attacker_army = message.mdata.data.attack.army;
+        printf("Got message: Attacker [%d] with army [%d, %d, %d]\n",
+          attacker_id,
+          attacker_army.light,
+          attacker_army.heavy,
+          attacker_army.cavalry
+        );
+        start_attack(attacker_id, defender_id, attacker_army);
+        break;
+      }
       default:
         break;
     }

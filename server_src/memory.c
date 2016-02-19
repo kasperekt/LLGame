@@ -102,6 +102,34 @@ void start_resources_production() {
   }
 }
 
+void start_attack(int a_id, int d_id, army_t a_army) {
+  pid_t pid = fork();
+  switch (pid) {
+    case -1: {
+      perror("Error forking (training): ");
+      exit(1);
+    }
+    case 0: {
+      sem_lock(memory_sem);
+      remove_units(a_id, a_army);
+      sem_unlock(memory_sem);
+
+      sleep(5);
+
+      sem_lock(memory_sem);
+      int winner = attack(a_id, d_id, a_army);
+      sem_unlock(memory_sem);
+
+      server_message_t msg = { 2, { ATTACK_RESULT, { .attack_result = { winner }}}};
+      broadcast_message(&msg);
+      exit(0);
+    }
+    default: {
+      break;
+    }
+  }
+}
+
 game_state_t *get_memory_data(char *shmaddr) {
   const int shmat_flag = 0;
   return shmat(memory_id, shmaddr, shmat_flag);
