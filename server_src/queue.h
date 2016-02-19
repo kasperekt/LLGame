@@ -6,6 +6,7 @@ void init_queue();
 void remove_queue();
 int get_queue_id();
 ssize_t get_queue_message(server_message_t *msg);
+int send_message(server_message_t *msg, int rcp, int nowait);
 int send_queue_message(server_message_t *msg, int rcp);
 void broadcast_message(server_message_t *msg);
 

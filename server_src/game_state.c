@@ -80,7 +80,7 @@ void save_state() {
   if (mem_state == NULL) {
     mem_state = get_memory_data(0);
   }
-  
+
   mem_state[0] = players[0];
   mem_state[1] = players[1];
   detach_memory_data(mem_state);
@@ -93,7 +93,7 @@ void broadcast_game_status() {
       GAME_STATUS,
       { .status = { players[i]->resources, *(players[i]->army) }}
     }};
-    send_queue_message(&msg, rcp);
+    send_message(&msg, rcp, 1);
   }
 }
 

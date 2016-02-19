@@ -35,9 +35,14 @@ ssize_t get_queue_message(server_message_t *msg) {
   return msgrcv(queue_id, msg, sizeof(game_message_t), 1, 0);
 }
 
-int send_queue_message(server_message_t *msg, int rcp) {
+int send_message(server_message_t *msg, int rcp, int nowait) {
+  int flag = nowait == 1 ? IPC_NOWAIT : 0;
   msg->mtype = rcp;
-  return msgsnd(queue_id, msg, sizeof(game_message_t), 0);
+  return msgsnd(queue_id, msg, sizeof(game_message_t), flag);
+}
+
+int send_queue_message(server_message_t *msg, int rcp) {
+  return send_message(msg, rcp, 0);
 }
 
 void broadcast_message(server_message_t *msg) {
