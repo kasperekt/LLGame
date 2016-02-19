@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <string.h>
 
+void clear_terminal() {
+  printf("\033[2J\033[1;1H");
+  rewind(stdout);
+}
+
 char *remove_last_char(char *str) {
   str[strlen(str) - 1] = '\0';
   return str;
