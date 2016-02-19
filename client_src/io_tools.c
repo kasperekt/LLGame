@@ -98,6 +98,14 @@ void read_command(pid_t child_pid) {
               count = atoi(get_command_string());
             }
 
+            server_message_t msg = { 1, {
+              UNIT_TRAINING,
+              { .training = {
+                  army_type,
+                  count
+              }}
+            }};
+            send_queue_message(&msg);
             printf("Started training for [%d] units\n", count);
             sleep(1);
             break;
